@@ -112,4 +112,12 @@ set(RX_SOURCES
 source_group("src" FILES ${RX_SOURCES})
 
 add_library(RxCpp SHARED ${RX_SOURCES})
+target_include_directories(
+  RxCpp
+  INTERFACE
+  ${RXCPP_DIR}/Rx/v2/src/
+  PRIVATE
+  ${RXCPP_DIR}/Rx/v2/src/rxcpp
+  )
+
 SET_TARGET_PROPERTIES(RxCpp PROPERTIES LINKER_LANGUAGE CXX)
