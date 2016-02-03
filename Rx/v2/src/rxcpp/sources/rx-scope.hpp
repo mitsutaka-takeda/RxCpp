@@ -18,8 +18,8 @@ struct scope_traits
 {
     typedef rxu::decay_t<ResourceFactory> resource_factory_type;
     typedef rxu::decay_t<ObservableFactory> observable_factory_type;
-    typedef decltype((*(resource_factory_type*)nullptr)()) resource_type;
-    typedef decltype((*(observable_factory_type*)nullptr)(resource_type())) collection_type;
+    typedef decltype(std::declval<resource_factory_type>()()) resource_type;
+    typedef decltype(std::declval<observable_factory_type>()(resource_type())) collection_type;
     typedef typename collection_type::value_type value_type;
 
     static_assert(is_subscription<resource_type>::value, "ResourceFactory must return a subscription");

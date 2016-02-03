@@ -35,7 +35,7 @@ struct scan : public operator_base<rxu::decay_t<Seed>>
     scan_initial_type initial;
 
     template<class CT, class CS, class CP>
-    static auto check(int) -> decltype((*(CP*)nullptr)(*(CS*)nullptr, *(CT*)nullptr));
+        static auto check(int) -> decltype((std::declval<CP>())(std::declval<CS>(), std::declval<CT>()));
     template<class CT, class CS, class CP>
     static void check(...);
 

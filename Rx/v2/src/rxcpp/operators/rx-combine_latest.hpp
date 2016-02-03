@@ -24,7 +24,7 @@ struct combine_latest_traits {
 
     struct tag_not_valid {};
     template<class CS, class... CVN>
-    static auto check(int) -> decltype((*(CS*)nullptr)((*(CVN*)nullptr)...));
+    static auto check(int) -> decltype((std::declval<CS>())(std::declval<CVN>...));
     template<class CS, class... CVN>
     static tag_not_valid check(...);
 
@@ -196,7 +196,7 @@ public:
 
     template<class Observable>
     auto operator()(Observable source)
-        -> decltype(make(std::tuple_cat(std::make_tuple(source), *(tuple_source_type*)nullptr))) {
+        -> decltype(make(std::tuple_cat(std::make_tuple(source), std::declval<tuple_source_type>()))) {
         return      make(std::tuple_cat(std::make_tuple(source), sourcen));
     }
 };

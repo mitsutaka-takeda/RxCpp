@@ -30,7 +30,7 @@ struct is_accumulate_function_for {
 
     struct tag_not_valid {};
     template<class CS, class CV, class CRS>
-    static auto check(int) -> decltype((*(CRS*)nullptr)(*(CS*)nullptr, *(CV*)nullptr));
+    static auto check(int) -> decltype(std::declval<CRS>()(std::declval<CS>(), std::declval<CV>()));
     template<class CS, class CV, class CRS>
     static tag_not_valid check(...);
 
@@ -47,7 +47,7 @@ struct is_result_function_for {
     struct tag_not_valid {};
 
     template<class CS, class CRS>
-    static auto check(int) -> decltype((*(CRS*)nullptr)(*(CS*)nullptr));
+    static auto check(int) -> decltype((std::declval<CRS>())(std::declval<CS>()));
     template<class CS, class CRS>
     static tag_not_valid check(...);
 

@@ -41,19 +41,19 @@ private:
     template<class Observable>
     struct get_observable
     {
-        typedef decltype((*(input_type*)nullptr).in((*(Observable*)nullptr))) type;
+        typedef decltype(std::declval<input_type>().in((std::declval<Observable>()))) type;
     };
 
     template<class Subscriber>
     struct get_subscriber
     {
-        typedef decltype((*(input_type*)nullptr).out((*(Subscriber*)nullptr))) type;
+        typedef decltype((std::declval<input_type>()).out((std::declval<Subscriber>()))) type;
     };
 
     template<class F>
     struct get_action_function
     {
-        typedef decltype((*(input_type*)nullptr).act((*(F*)nullptr))) type;
+        typedef decltype((std::declval<input_type>()).act(std::declval<F>())) type;
     };
 
 public:

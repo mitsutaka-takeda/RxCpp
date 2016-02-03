@@ -25,6 +25,7 @@ struct OnNextEmpty
 };
 struct OnErrorEmpty
 {
+    [[noreturn]]
     void operator()(std::exception_ptr) const {
         // error implicitly ignored, abort
         abort();
@@ -153,7 +154,7 @@ struct is_on_completed
 {
     struct not_void {};
     template<class CF>
-    static auto check(int) -> decltype((*reinterpret_cast<CF*>(nullptr))());
+    static auto check(int) -> decltype(std::declval<CF>()());
     template<class CF>
     static not_void check(...);
 
