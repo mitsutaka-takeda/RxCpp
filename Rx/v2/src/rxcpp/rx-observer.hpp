@@ -350,10 +350,10 @@ template<class T>
 struct virtual_observer : public std::enable_shared_from_this<virtual_observer<T>>
 {
     virtual ~virtual_observer() {}
-    virtual void on_next(T&) const {};
-    virtual void on_next(T&&) const {};
-    virtual void on_error(std::exception_ptr) const {};
-    virtual void on_completed() const {};
+    virtual void on_next(T&) const {}
+    virtual void on_next(T&&) const {}
+    virtual void on_error(std::exception_ptr) const {}
+    virtual void on_completed() const {}
 };
 
 template<class T, class Observer>
