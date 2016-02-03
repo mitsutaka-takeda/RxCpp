@@ -17,11 +17,11 @@ class subscription
     long u;
 
 public:
-    explicit inline subscription(long s)
-        : s(s), u(std::numeric_limits<long>::max()) {
+    explicit inline subscription(long s_)
+        : s(s_), u(std::numeric_limits<long>::max()) {
     }
-    inline subscription(long s, long u)
-        : s(s), u(u) {
+    inline subscription(long s_, long u_)
+        : s(s_), u(u_) {
     }
     inline long subscribe() const {
         return s;
@@ -117,7 +117,7 @@ private:
     typedef detail::notification_base<T> base;
 
     struct on_next_notification : public base {
-        on_next_notification(T value) : value(std::move(value)) {
+        on_next_notification(T value_) : value(std::move(value_)) {
         }
         on_next_notification(const on_next_notification& o) : value(o.value) {}
         on_next_notification(const on_next_notification&& o) : value(std::move(o.value)) {}
@@ -141,7 +141,7 @@ private:
     };
 
     struct on_error_notification : public base {
-        on_error_notification(std::exception_ptr ep) : ep(ep) {
+        on_error_notification(std::exception_ptr ep_) : ep(ep_) {
         }
         on_error_notification(const on_error_notification& o) : ep(o.ep) {}
         on_error_notification(const on_error_notification&& o) : ep(std::move(o.ep)) {}
@@ -250,8 +250,8 @@ class recorded
     long t;
     T v;
 public:
-    recorded(long t, T v)
-        : t(t), v(v) {
+    recorded(long t_, T v_)
+        : t(t_), v(v_) {
     }
     long time() const {
         return t;

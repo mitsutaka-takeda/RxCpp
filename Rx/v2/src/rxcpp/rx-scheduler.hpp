@@ -441,8 +441,8 @@ class schedulable : public schedulable_base
                 that->unsubscribe();
             }
         }
-        detacher(const this_type* that)
-            : that(that)
+        detacher(const this_type* that_)
+            : that(that_)
         {
         }
         const this_type* that;
@@ -460,8 +460,8 @@ class schedulable : public schedulable_base
             {
                     that->requestor = nullptr;
             }
-            exit_recursed_scope_type(const recursed_scope_type* that)
-                : that(that)
+            exit_recursed_scope_type(const recursed_scope_type* that_)
+                : that(that_)
             {
             }
         };
@@ -660,8 +660,8 @@ public:
     {
     }
 
-    action_type(function_type f)
-        : f(std::move(f))
+    action_type(function_type f_)
+        : f(std::move(f_))
     {
     }
 
@@ -842,9 +842,9 @@ struct time_schedulable
 {
     typedef TimePoint time_point_type;
 
-    time_schedulable(TimePoint when, schedulable a)
-        : when(when)
-        , what(std::move(a))
+    time_schedulable(TimePoint when_, schedulable what_)
+        : when(when_)
+        , what(std::move(what_))
     {
     }
     TimePoint when;
