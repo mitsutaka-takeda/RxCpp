@@ -183,7 +183,7 @@ struct is_action_function
 {
     struct not_void {};
     template<class CF>
-    static auto check(int) -> decltype((*(CF*)nullptr)(*(schedulable*)nullptr));
+    static auto check(int) -> decltype((std::declval<CF>())(std::declval<schedulable>()));
     template<class CF>
     static not_void check(...);
 
