@@ -62,13 +62,14 @@ set(TEST_SOURCES
 )
 
 
-add_executable(rxcppv2_test ${TEST_DIR}/test.cpp ${TEST_SOURCES})
+add_executable(rxcppv2_test EXCLUDE_FROM_ALL ${TEST_DIR}/test.cpp ${TEST_SOURCES})
 add_executable(rxcpp::tests ALIAS rxcppv2_test)
 set_target_properties(
-    rxcppv2_test PROPERTIES
+    rxcppv2_test 
+    PROPERTIES
     EXCLUDE_FROM_DEFAULT_BUILD TRUE
-    EXCLUDE_FROM_ALL TRUE
 )
+
 target_compile_options(rxcppv2_test PUBLIC ${RX_COMPILE_OPTIONS})
 target_compile_features(rxcppv2_test PUBLIC ${RX_COMPILE_FEATURES})
 target_include_directories(rxcppv2_test
@@ -81,8 +82,8 @@ foreach(ONE_TEST_SOURCE ${TEST_SOURCES})
     get_filename_component(ONE_TEST_NAME "${ONE_TEST_SOURCE}" NAME)
     string( REPLACE ".cpp" "" ONE_TEST_NAME ${ONE_TEST_NAME})
     set(ONE_TEST_FULL_NAME "rxcpp_test_${ONE_TEST_NAME}")
-    add_executable( ${ONE_TEST_FULL_NAME} ${ONE_TEST_SOURCE} )
-    add_executable( rxcpp::${ONE_TEST_NAME} ALIAS ${ONE_TEST_FULL_NAME})
+    add_executable(${ONE_TEST_FULL_NAME} EXCLUDE_FROM_ALL ${ONE_TEST_SOURCE})
+    add_executable(rxcpp::${ONE_TEST_NAME} ALIAS ${ONE_TEST_FULL_NAME})
     target_compile_definitions(${ONE_TEST_FULL_NAME} PUBLIC "CATCH_CONFIG_MAIN")
     target_compile_options(${ONE_TEST_FULL_NAME} PUBLIC ${RX_COMPILE_OPTIONS})
     target_compile_features(${ONE_TEST_FULL_NAME} PUBLIC ${RX_COMPILE_FEATURES})
