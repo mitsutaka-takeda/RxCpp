@@ -464,6 +464,8 @@ class schedulable : public schedulable_base
                 : that(that_)
             {
             }
+            exit_recursed_scope_type(const exit_recursed_scope_type&) = default;
+            exit_recursed_scope_type& operator=(const exit_recursed_scope_type&) = default;
         };
     public:
         recursed_scope_type()
@@ -507,6 +509,9 @@ public:
         : scoped(false)
     {
     }
+
+    schedulable(const schedulable&) = default;
+    schedulable& operator=(const schedulable&) = default;
 
     /// action and worker share lifetime
     schedulable(worker q, action a)
@@ -764,7 +769,7 @@ inline auto make_schedulable(schedulable scbl, worker sc, composite_subscription
 }
 inline auto make_schedulable(schedulable scbl, worker sc)
     -> schedulable {
-    return schedulable(scbl, sc, scbl.get_action());
+    return {scbl, sc, scbl.get_action()};
 }
 
 template<class Arg0, class... ArgN>
