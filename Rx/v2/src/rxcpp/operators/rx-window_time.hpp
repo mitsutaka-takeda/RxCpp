@@ -50,11 +50,11 @@ struct window_with_time
 
         struct window_with_time_subscriber_values : public window_with_time_values
         {
-            window_with_time_subscriber_values(composite_subscription cs, dest_type d, window_with_time_values v, coordinator_type c)
-                : window_with_time_values(v)
-                , cs(std::move(cs))
-                , dest(std::move(d))
-                , coordinator(std::move(c))
+            window_with_time_subscriber_values(composite_subscription cs_, dest_type d_, window_with_time_values v_, coordinator_type c_)
+                : window_with_time_values(v_)
+                , cs(std::move(cs_))
+                , dest(std::move(d_))
+                , coordinator(std::move(c_))
                 , worker(coordinator.get_worker())
                 , expected(worker.now())
             {

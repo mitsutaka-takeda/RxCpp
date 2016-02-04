@@ -60,8 +60,8 @@ class multicast_observer
                 std::copy_if(
                     old->observers.begin(), old->observers.end(),
                     std::inserter(observers, observers.end()),
-                    [](const observer_type& o){
-                        return o.is_subscribed();
+                    [](const observer_type& o_){
+                        return o_.is_subscribed();
                     });
             }
             observers.push_back(o);

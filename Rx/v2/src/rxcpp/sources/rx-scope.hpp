@@ -59,9 +59,9 @@ struct scope : public source_base<rxu::value_type_t<scope_traits<ResourceFactory
             : public std::enable_shared_from_this<state_type>
             , public values
         {
-            state_type(values i, Subscriber o)
-                : values(i)
-                , out(std::move(o))
+            state_type(values i_, Subscriber o_)
+                : values(i_)
+                , out(std::move(o_))
             {
             }
             Subscriber out;

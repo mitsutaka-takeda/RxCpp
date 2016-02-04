@@ -57,11 +57,11 @@ class synchronize_observer : public detail::multicast_observer<T>
 
                 auto drain_queue = [keepAlive, this](const rxsc::schedulable& self){
                     try {
-                        std::unique_lock<std::mutex> guard(lock);
+                        std::unique_lock<std::mutex> ul(lock);
                         if (!destination.is_subscribed()) {
                             current = mode::Disposed;
                             fill_queue.clear();
-                            guard.unlock();
+                            ul.unlock();
                             lifetime.unsubscribe();
                             return;
                         }
@@ -71,12 +71,12 @@ class synchronize_observer : public detail::multicast_observer<T>
                         }
                         auto notification = std::move(fill_queue.front());
                         fill_queue.pop_front();
-                        guard.unlock();
+                        ul.unlock();
                         notification->accept(destination);
                         self();
                     } catch(...) {
                         destination.on_error(std::current_exception());
-                        std::unique_lock<std::mutex> guard(lock);
+                        std::unique_lock<std::mutex> ul(lock);
                         current = mode::Empty;
                     }
                 };

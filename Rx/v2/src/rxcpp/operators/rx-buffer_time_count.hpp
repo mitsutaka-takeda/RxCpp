@@ -53,11 +53,11 @@ struct buffer_with_time_or_count
 
         struct buffer_with_time_or_count_subscriber_values : public buffer_with_time_or_count_values
         {
-            buffer_with_time_or_count_subscriber_values(composite_subscription cs, dest_type d, buffer_with_time_or_count_values v, coordinator_type c)
-                : buffer_with_time_or_count_values(std::move(v))
-                , cs(std::move(cs))
-                , dest(std::move(d))
-                , coordinator(std::move(c))
+            buffer_with_time_or_count_subscriber_values(composite_subscription cs_, dest_type d_, buffer_with_time_or_count_values v_, coordinator_type c_)
+                : buffer_with_time_or_count_values(std::move(v_))
+                , cs(std::move(cs_))
+                , dest(std::move(d_))
+                , coordinator(std::move(c_))
                 , worker(coordinator.get_worker())
                 , chunk_id(0)
             {

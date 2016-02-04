@@ -72,18 +72,18 @@ struct iterate : public source_base<rxu::value_type_t<iterate_traits<Collection>
         struct iterate_state_type
             : public iterate_initial_type
         {
-            iterate_state_type(const iterate_initial_type& i, output_type o)
-                : iterate_initial_type(i)
+            iterate_state_type(const iterate_initial_type& i_, output_type o_)
+                : iterate_initial_type(i_)
                 , cursor(std::begin(iterate_initial_type::collection))
                 , end(std::end(iterate_initial_type::collection))
-                , out(std::move(o))
+                , out(std::move(o_))
             {
             }
-            iterate_state_type(const iterate_state_type& o)
-                : iterate_initial_type(o)
+            iterate_state_type(const iterate_state_type& o_)
+                : iterate_initial_type(o_)
                 , cursor(std::begin(iterate_initial_type::collection))
                 , end(std::end(iterate_initial_type::collection))
-                , out(std::move(o.out)) // since lambda capture does not yet support move
+                , out(std::move(o_.out)) // since lambda capture does not yet support move
             {
             }
             mutable iterator_type cursor;
