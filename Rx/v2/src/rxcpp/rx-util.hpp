@@ -336,7 +336,7 @@ struct print_function
 {
     OStream& os;
     Delimit delimit;
-    print_function(OStream& os, Delimit d) : os(os), delimit(std::move(d)) {}
+    print_function(OStream& os_, Delimit d_) : os(os_), delimit(std::move(d_)) {}
 
     template<class... TN>
     void operator()(const TN&... tn) const {
@@ -355,7 +355,7 @@ template<class OStream>
 struct endline
 {
     OStream& os;
-    endline(OStream& os) : os(os) {}
+    endline(OStream& os_) : os(os_) {}
     void operator()() const {
         os << std::endl;
     }
@@ -368,7 +368,7 @@ struct insert_value
 {
     OStream& os;
     ValueType value;
-    insert_value(OStream& os, ValueType v) : os(os), value(std::move(v)) {}
+    insert_value(OStream& os_, ValueType v_) : os(os_), value(std::move(v_)) {}
     void operator()() const {
         os << value;
     }
@@ -381,7 +381,7 @@ struct insert_function
 {
     OStream& os;
     Function call;
-    insert_function(OStream& os, Function f) : os(os), call(std::move(f)) {}
+    insert_function(OStream& os_, Function f_) : os(os_), call(std::move(f_)) {}
     void operator()() const {
         call(os);
     }

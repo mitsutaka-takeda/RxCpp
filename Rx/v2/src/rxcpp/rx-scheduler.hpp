@@ -183,7 +183,7 @@ struct is_action_function
 {
     struct not_void {};
     template<class CF>
-    static auto check(int) -> decltype((*(CF*)nullptr)(*(schedulable*)nullptr));
+    static auto check(int) -> decltype((std::declval<CF>())(std::declval<schedulable>()));
     template<class CF>
     static not_void check(...);
 
@@ -441,8 +441,8 @@ class schedulable : public schedulable_base
                 that->unsubscribe();
             }
         }
-        detacher(const this_type* that)
-            : that(that)
+        detacher(const this_type* that_)
+            : that(that_)
         {
         }
         const this_type* that;
@@ -460,10 +460,12 @@ class schedulable : public schedulable_base
             {
                     that->requestor = nullptr;
             }
-            exit_recursed_scope_type(const recursed_scope_type* that)
-                : that(that)
+            exit_recursed_scope_type(const recursed_scope_type* that_)
+                : that(that_)
             {
             }
+            exit_recursed_scope_type(const exit_recursed_scope_type&) = default;
+            exit_recursed_scope_type& operator=(const exit_recursed_scope_type&) = default;
         };
     public:
         recursed_scope_type()
@@ -507,6 +509,9 @@ public:
         : scoped(false)
     {
     }
+
+    schedulable(const schedulable&) = default;
+    schedulable& operator=(const schedulable&) = default;
 
     /// action and worker share lifetime
     schedulable(worker q, action a)
@@ -660,8 +665,8 @@ public:
     {
     }
 
-    action_type(function_type f)
-        : f(std::move(f))
+    action_type(function_type f_)
+        : f(std::move(f_))
     {
     }
 
@@ -764,7 +769,7 @@ inline auto make_schedulable(schedulable scbl, worker sc, composite_subscription
 }
 inline auto make_schedulable(schedulable scbl, worker sc)
     -> schedulable {
-    return schedulable(scbl, sc, scbl.get_action());
+    return {scbl, sc, scbl.get_action()};
 }
 
 template<class Arg0, class... ArgN>
@@ -842,9 +847,9 @@ struct time_schedulable
 {
     typedef TimePoint time_point_type;
 
-    time_schedulable(TimePoint when, schedulable a)
-        : when(when)
-        , what(std::move(a))
+    time_schedulable(TimePoint when_, schedulable what_)
+        : when(when_)
+        , what(std::move(what_))
     {
     }
     TimePoint when;

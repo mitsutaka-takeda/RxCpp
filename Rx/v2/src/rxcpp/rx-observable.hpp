@@ -22,7 +22,7 @@ struct is_operator_factory_for
 {
     struct not_void {};
     template<class CS, class CF>
-    static auto check(int) -> decltype((*(CF*)nullptr)(*(CS*)nullptr));
+    static auto check(int) -> decltype(std::declval<CF>()(std::declval<CS>()));
     template<class CS, class CF>
     static not_void check(...);
 
@@ -38,7 +38,7 @@ struct has_on_subscribe_for
 {
     struct not_void {};
     template<class CS, class CT>
-    static auto check(int) -> decltype((*(CT*)nullptr).on_subscribe(*(CS*)nullptr));
+    static auto check(int) -> decltype(std::declval<CT>().on_subscribe(std::declval<CS>()));
     template<class CS, class CT>
     static not_void check(...);
 
@@ -629,7 +629,7 @@ public:
     ///
     template<class OperatorFactory>
     auto op(OperatorFactory&& of) const
-        -> decltype(of(*(const this_type*)nullptr)) {
+        -> decltype(of(std::declval<const this_type>())) {
         return      of(*this);
         static_assert(detail::is_operator_factory_for<this_type, OperatorFactory>::value, "Function passed for op() must have the signature Result(SourceObservable)");
     }
@@ -1863,7 +1863,7 @@ public:
     template<class... AN>
     auto combine_latest(AN... an) const
         /// \cond SHOW_SERVICE_MEMBERS
-        -> decltype(select_combine_latest<this_type, rxu::types<decltype(an)...>>{}(*(this_type*)nullptr,  std::move(an)...))
+        -> decltype(select_combine_latest<this_type, rxu::types<decltype(an)...>>{}(std::declval<this_type>(),  std::move(an)...))
         /// \endcond
     {
         return      select_combine_latest<this_type, rxu::types<decltype(an)...>>{}(*this,                 std::move(an)...);
@@ -1979,7 +1979,7 @@ public:
     template<class... AN>
     auto zip(AN... an) const
         /// \cond SHOW_SERVICE_MEMBERS
-        -> decltype(select_zip<this_type, rxu::types<decltype(an)...>>{}(*(this_type*)nullptr,  std::move(an)...))
+        -> decltype(select_zip<this_type, rxu::types<decltype(an)...>>{}(std::declval<this_type>(),  std::move(an)...))
         /// \endcond
     {
         return      select_zip<this_type, rxu::types<decltype(an)...>>{}(*this,                 std::move(an)...);
@@ -2856,7 +2856,7 @@ public:
     template<class Value0, class... ValueN>
     auto start_with(Value0 v0, ValueN... vn) const
         /// \cond SHOW_SERVICE_MEMBERS
-        -> decltype(rxo::start_with(*(this_type*)nullptr, std::move(v0), std::move(vn)...))
+        -> decltype(rxo::start_with(std::declval<this_type>(), std::move(v0), std::move(vn)...))
         /// \endcond
     {
         return      rxo::start_with(*this, std::move(v0), std::move(vn)...);

@@ -25,6 +25,7 @@ struct OnNextEmpty
 };
 struct OnErrorEmpty
 {
+    [[noreturn]]
     void operator()(std::exception_ptr) const {
         // error implicitly ignored, abort
         abort();
@@ -116,7 +117,7 @@ struct is_on_next_of
 {
     struct not_void {};
     template<class CT, class CF>
-    static auto check(int) -> decltype((*(CF*)nullptr)(*(CT*)nullptr));
+    static auto check(int) -> decltype(std::declval<CF>()(std::declval<CT>()));
     template<class CT, class CF>
     static not_void check(...);
 
@@ -129,7 +130,7 @@ struct is_on_error
 {
     struct not_void {};
     template<class CF>
-    static auto check(int) -> decltype((*(CF*)nullptr)(*(std::exception_ptr*)nullptr));
+    static auto check(int) -> decltype(std::declval<CF>()(std::declval<std::exception_ptr>()));
     template<class CF>
     static not_void check(...);
 
@@ -141,7 +142,7 @@ struct is_on_error_for
 {
     struct not_void {};
     template<class CF>
-    static auto check(int) -> decltype((*(CF*)nullptr)(*(State*)nullptr, *(std::exception_ptr*)nullptr));
+    static auto check(int) -> decltype(std::declval<CF>()(std::declval<State>(), std::declval<std::exception_ptr>()));
     template<class CF>
     static not_void check(...);
 
@@ -153,7 +154,7 @@ struct is_on_completed
 {
     struct not_void {};
     template<class CF>
-    static auto check(int) -> decltype((*(CF*)nullptr)());
+    static auto check(int) -> decltype(std::declval<CF>()());
     template<class CF>
     static not_void check(...);
 
@@ -350,10 +351,10 @@ template<class T>
 struct virtual_observer : public std::enable_shared_from_this<virtual_observer<T>>
 {
     virtual ~virtual_observer() {}
-    virtual void on_next(T&) const {};
-    virtual void on_next(T&&) const {};
-    virtual void on_error(std::exception_ptr) const {};
-    virtual void on_completed() const {};
+    virtual void on_next(T&) const {}
+    virtual void on_next(T&&) const {}
+    virtual void on_error(std::exception_ptr) const {}
+    virtual void on_completed() const {}
 };
 
 template<class T, class Observer>
@@ -628,7 +629,7 @@ namespace detail {
 template<class F>
 struct maybe_from_result
 {
-    typedef decltype((*(F*)nullptr)()) decl_result_type;
+    typedef decltype((std::declval<F>())()) decl_result_type;
     typedef rxu::decay_t<decl_result_type> result_type;
     typedef rxu::maybe<result_type> type;
 };

@@ -42,8 +42,8 @@ class subscriber : public subscriber_base<T>
                 that->unsubscribe();
             }
         }
-        nextdetacher(const this_type* that)
-            : that(that)
+        nextdetacher(const this_type* that_)
+            : that(that_)
             , do_unsubscribe(true)
         {
         }
@@ -71,8 +71,8 @@ class subscriber : public subscriber_base<T>
             trace_activity().on_error_return(*that);
             that->unsubscribe();
         }
-        errordetacher(const this_type* that)
-            : that(that)
+        errordetacher(const this_type* that_)
+            : that(that_)
         {
         }
         inline void operator()(std::exception_ptr ex) {
@@ -89,8 +89,8 @@ class subscriber : public subscriber_base<T>
             trace_activity().on_completed_return(*that);
             that->unsubscribe();
         }
-        completeddetacher(const this_type* that)
-            : that(that)
+        completeddetacher(const this_type* that_)
+            : that(that_)
         {
         }
         inline void operator()() {
@@ -133,10 +133,10 @@ public:
     }
 
     template<class U>
-    subscriber(trace_id id, composite_subscription cs, U&& o)
-        : lifetime(std::move(cs))
-        , destination(std::forward<U>(o))
-        , id(std::move(id))
+    subscriber(trace_id id_, composite_subscription cs_, U&& o_)
+        : lifetime(std::move(cs_))
+        , destination(std::forward<U>(o_))
+        , id(std::move(id_))
     {
         static_assert(!is_subscriber<U>::value, "cannot nest subscribers");
         static_assert(is_observer<U>::value, "must pass observer to subscriber");

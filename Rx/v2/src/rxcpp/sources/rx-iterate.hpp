@@ -20,7 +20,7 @@ struct is_iterable
 
     struct not_void {};
     template<class CC>
-    static auto check(int) -> decltype(std::begin(*(CC*)nullptr));
+    static auto check(int) -> decltype(std::begin(std::declval<CC>()));
     template<class CC>
     static not_void check(...);
 
@@ -31,7 +31,7 @@ template<class Collection>
 struct iterate_traits
 {
     typedef rxu::decay_t<Collection> collection_type;
-    typedef decltype(std::begin(*(collection_type*)nullptr)) iterator_type;
+    typedef decltype(std::begin(std::declval<collection_type>())) iterator_type;
     typedef rxu::value_type_t<std::iterator_traits<iterator_type>> value_type;
 };
 
@@ -72,18 +72,18 @@ struct iterate : public source_base<rxu::value_type_t<iterate_traits<Collection>
         struct iterate_state_type
             : public iterate_initial_type
         {
-            iterate_state_type(const iterate_initial_type& i, output_type o)
-                : iterate_initial_type(i)
+            iterate_state_type(const iterate_initial_type& i_, output_type o_)
+                : iterate_initial_type(i_)
                 , cursor(std::begin(iterate_initial_type::collection))
                 , end(std::end(iterate_initial_type::collection))
-                , out(std::move(o))
+                , out(std::move(o_))
             {
             }
-            iterate_state_type(const iterate_state_type& o)
-                : iterate_initial_type(o)
+            iterate_state_type(const iterate_state_type& o_)
+                : iterate_initial_type(o_)
                 , cursor(std::begin(iterate_initial_type::collection))
                 , end(std::end(iterate_initial_type::collection))
-                , out(std::move(o.out)) // since lambda capture does not yet support move
+                , out(std::move(o_.out)) // since lambda capture does not yet support move
             {
             }
             mutable iterator_type cursor;
@@ -159,14 +159,14 @@ auto from(Coordination cn)
 template<class Value0, class... ValueN>
 auto from(Value0 v0, ValueN... vn)
     -> typename std::enable_if<!is_coordination<Value0>::value,
-        decltype(iterate(*(std::array<Value0, sizeof...(ValueN) + 1>*)nullptr, identity_immediate()))>::type {
+    decltype(iterate(std::declval<std::array<Value0, sizeof...(ValueN) + 1> >(), identity_immediate()))>::type {
     std::array<Value0, sizeof...(ValueN) + 1> c{{v0, vn...}};
     return iterate(std::move(c), identity_immediate());
 }
 template<class Coordination, class Value0, class... ValueN>
 auto from(Coordination cn, Value0 v0, ValueN... vn)
     -> typename std::enable_if<is_coordination<Coordination>::value,
-        decltype(iterate(*(std::array<Value0, sizeof...(ValueN) + 1>*)nullptr, std::move(cn)))>::type {
+    decltype(iterate(std::declval<std::array<Value0, sizeof...(ValueN) + 1> >(), std::move(cn)))>::type {
     std::array<Value0, sizeof...(ValueN) + 1> c{{v0, vn...}};
     return iterate(std::move(c), std::move(cn));
 }

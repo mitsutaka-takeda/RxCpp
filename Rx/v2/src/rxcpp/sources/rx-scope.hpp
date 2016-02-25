@@ -18,8 +18,8 @@ struct scope_traits
 {
     typedef rxu::decay_t<ResourceFactory> resource_factory_type;
     typedef rxu::decay_t<ObservableFactory> observable_factory_type;
-    typedef decltype((*(resource_factory_type*)nullptr)()) resource_type;
-    typedef decltype((*(observable_factory_type*)nullptr)(resource_type())) collection_type;
+    typedef decltype(std::declval<resource_factory_type>()()) resource_type;
+    typedef decltype(std::declval<observable_factory_type>()(resource_type())) collection_type;
     typedef typename collection_type::value_type value_type;
 
     static_assert(is_subscription<resource_type>::value, "ResourceFactory must return a subscription");
@@ -59,9 +59,9 @@ struct scope : public source_base<rxu::value_type_t<scope_traits<ResourceFactory
             : public std::enable_shared_from_this<state_type>
             , public values
         {
-            state_type(values i, Subscriber o)
-                : values(i)
-                , out(std::move(o))
+            state_type(values i_, Subscriber o_)
+                : values(i_)
+                , out(std::move(o_))
             {
             }
             Subscriber out;

@@ -4,28 +4,7 @@ get_filename_component(SAMPLE_PROJECT "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 
 project(${SAMPLE_PROJECT})
 
-FIND_PACKAGE(Threads)
-
-MESSAGE( STATUS "CMAKE_CXX_COMPILER_ID: " ${CMAKE_CXX_COMPILER_ID} )
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    MESSAGE( STATUS "using clang settings" )
-    add_compile_options( -Wall -Wextra -Werror )
-    add_compile_options( -std=c++11 -stdlib=libc++ )
-    add_compile_options( -ftemplate-depth=1024 ) # sometimes you just do what the compiler tells you
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    MESSAGE( STATUS "using gnu settings" )
-    add_compile_options( -Wall -Wextra -Werror )
-    add_compile_options( -std=c++11 )
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    MESSAGE( STATUS "using msvc settings" )
-    add_compile_options( /W4 /WX )
-    add_compile_options( /wd4503 ) # truncated symbol
-    add_compile_options( /wd4702 ) # unreachable code
-    add_compile_options( /wd4091 ) # typedef ignored on left when no variable is declared
-    add_compile_options( /bigobj )
-    add_definitions( /DUNICODE /D_UNICODE ) # it is a new millenium
-endif()
-
+find_package(Threads)
 
 # define some folders
 get_filename_component(RXCPP_DIR "${CMAKE_CURRENT_SOURCE_DIR}" PATH)
@@ -33,22 +12,57 @@ get_filename_component(RXCPP_DIR "${RXCPP_DIR}" PATH)
 get_filename_component(RXCPP_DIR "${RXCPP_DIR}" PATH)
 get_filename_component(RXCPP_DIR "${RXCPP_DIR}" PATH)
 
-MESSAGE( STATUS "RXCPP_DIR: " ${RXCPP_DIR} )
-
-include_directories(SYSTEM ${RXCPP_DIR}/ext/catch/include)
-include_directories(${RXCPP_DIR}/Ix/CPP/src ${RXCPP_DIR}/Rx/v2/src)
+message(STATUS "RXCPP_DIR: " ${RXCPP_DIR} )
 
 # define the sources
 set(SAMPLE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
-add_executable(${SAMPLE_PROJECT} WIN32 ${SAMPLE_SOURCES})
-TARGET_LINK_LIBRARIES(${SAMPLE_PROJECT} ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(
+  ${SAMPLE_PROJECT}
+  WIN32
+  ${SAMPLE_SOURCES}
+  )
+
+target_compile_options(
+  ${SAMPLE_PROJECT}
+  PRIVATE
+  $<$<CXX_COMPILER_ID:Clang>:-std=c++11 -stdlib=libc++ -Wall -Wextra -Werror -ftemplate-depth=1024>
+  $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Werror -std=c++11>
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX /wd4503 /wd4702 /wd4091 /bigobj>
+  )
+
+target_include_directories(
+  ${SAMPLE_PROJECT}
+  SYSTEM
+  PRIVATE
+  ${RXCPP_DIR}/ext/catch/include
+  )
+
+target_include_directories(
+  ${SAMPLE_PROJECT}
+  PRIVATE
+  ${RXCPP_DIR}/Ix/CPP/src ${RXCPP_DIR}/Rx/v2/src
+  )
+
+target_compile_definitions(
+  ${SAMPLE_PROJECT}
+  PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/DUNICODE /D_UNICODE>
+  )
+
+target_link_libraries(
+  ${SAMPLE_PROJECT}
+  PRIVATE
+  ${CMAKE_THREAD_LIBS_INIT}
+  )
 
 # configure unit tests via CTest
 enable_testing()
 set(CTEST_CONFIGURATION_TYPE "${JOB_BUILD_CONFIGURATION}")
 
-add_test(NAME RunTests 
+add_test(NAME RunTests
      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-     COMMAND ${SAMPLE_PROJECT} ${TEST_ARGS})
+     COMMAND ${SAMPLE_PROJECT} ${TEST_ARGS}
+     )

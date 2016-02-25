@@ -102,10 +102,10 @@ struct observe_on
                         try {
                             for (;;) {
                                 if (drain_queue.empty() || !destination.is_subscribed()) {
-                                    std::unique_lock<std::mutex> guard(lock);
+                                    std::unique_lock<std::mutex> g(lock);
                                     if (!destination.is_subscribed() ||
                                         (!lifetime.is_subscribed() && fill_queue.empty() && drain_queue.empty())) {
-                                        finish(guard, mode::Disposed);
+                                        finish(g, mode::Disposed);
                                         return;
                                     }
                                     if (drain_queue.empty()) {
@@ -119,14 +119,14 @@ struct observe_on
                                 auto notification = std::move(drain_queue.front());
                                 drain_queue.pop_front();
                                 notification->accept(destination);
-                                std::unique_lock<std::mutex> guard(lock);
+                                std::unique_lock<std::mutex> g(lock);
                                 self();
                                 if (lifetime.is_subscribed()) break;
                             }
                         } catch(...) {
                             destination.on_error(std::current_exception());
-                            std::unique_lock<std::mutex> guard(lock);
-                            finish(guard, mode::Errored);
+                            std::unique_lock<std::mutex> g(lock);
+                            finish(g, mode::Errored);
                         }
                     };
 

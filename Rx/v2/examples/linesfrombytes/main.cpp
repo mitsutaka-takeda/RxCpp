@@ -1,11 +1,13 @@
+#include <cstdint>
+#include <regex>
+#include <random>
+#include <vector>
 
 #include "rxcpp/rx.hpp"
 using namespace rxcpp;
 using namespace rxcpp::sources;
 using namespace rxcpp::util;
 
-#include <regex>
-#include <random>
 using namespace std;
 
 int main()
@@ -27,11 +29,11 @@ int main()
             return w.
                 reduce(
                     vector<uint8_t>(), 
-                    [](vector<uint8_t>& v, uint8_t b){
+                    [](vector<uint8_t> v, uint8_t b) {
                         v.push_back(b); 
-                        return move(v);
+                        return v;
                     }, 
-                    [](vector<uint8_t>& v){return move(v);}).
+                    [](vector<uint8_t> v){return v;}).
                 as_dynamic(); 
         }).
         merge().
@@ -57,10 +59,10 @@ int main()
     int group = 0;
     auto linewindows = strings.
         group_by(
-            [=](string& s) mutable {
+            [=](const string& s) mutable {
                 return s.back() == '\r' ? group++ : group;
             },
-            [](string& s) { return move(s);});
+            [](string s) { return s;});
 
     // reduce the strings for a line into one string
     auto lines = linewindows.
