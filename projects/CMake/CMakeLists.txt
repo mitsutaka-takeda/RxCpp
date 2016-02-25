@@ -25,7 +25,7 @@ add_subdirectory(${EXAMPLES_DIR}/pythagorian ${CMAKE_CURRENT_BINARY_DIR}/example
 add_subdirectory(${EXAMPLES_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/examples/tests)
 
 add_library(
-  RxCpp
+  RxCpp 
   SHARED
   ${RXCPP_DIR}/Rx/v2/src/rxcpp/operators/rx-amb.hpp
   ${RXCPP_DIR}/Rx/v2/src/rxcpp/operators/rx-buffer_count.hpp
@@ -118,8 +118,8 @@ target_include_directories(
   )
 
 set_target_properties(
-  RxCpp
-  PROPERTIES
+  RxCpp 
+  PROPERTIES 
   LINKER_LANGUAGE CXX
   FOLDER src
   )

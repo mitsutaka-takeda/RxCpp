@@ -8,7 +8,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     MESSAGE( STATUS "using clang settings" )
     set(RX_COMPILE_OPTIONS
         -Wall -Wextra -Werror -Wunused
-        -stdlib=libc++
+        # -stdlib=libc++
         -ftemplate-depth=1024
         )
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
